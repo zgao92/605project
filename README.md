@@ -30,5 +30,8 @@ We are group 12 for groupwork3 on STAT 605. Our topic is Rainbow 6 Game Analysis
 * **Report.Rmd** is the our report markdown file.
 * **Report.html** is the our report html file.
 
-##Contributor:
-* Zejin Gao: 
+## Contributor:
+* Zejin Gao: zgao92@wisc.edu
+* Yansong Mao: ymao49@wisc.edu
+* Ke Chen: kchen323@wisc.edu
+* Ping Yu: pyu59@wisc.edu
