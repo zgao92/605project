@@ -6,7 +6,7 @@
 - To find weapons with best performance
 
 
-## code
+## Chtc and Bash Code:
 
 * **job.sh** and **job.sub** are the codes for chtc to run.
 
@@ -18,3 +18,6 @@
 
 * **primaryweapon.txt** is the file containing the counting result for primary weapon.
 
+## Post Analysis R Code:
+
+* **.R** is the code for post analysis.
