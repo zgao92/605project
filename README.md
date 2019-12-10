@@ -10,23 +10,19 @@ Rainbow Six is a very popular tactical shooter video game, which focuses more on
 - To find weapons with best performance
 
 
-## CHTC and Bash Code:
+## Code:
 
-* **job.sh** and **job.sub** are the codes for chtc to run.
+* **submit.sh** is the code we run for getting the chtc_output.
 
-* **combine.sh** is the code for combine the results in 22 parallel outputs.
+* **job.sh**, **job.sub**, **job.dag** and **combine.sh** are the supporting codes for **submit.sh**.
 
-## CHTC Result:
+## Chtc_output:
 
 * **map.txt** is the file containing the counting result for map.
 
 * **operator.txt** is the file containing the counting result for operator.
 
 * **primaryweapon.txt** is the file containing the counting result for primary weapon.
-
-## Post Analysis R Code:
-
-* **group3.R** is the code for post analysis.
 
 ## Report:
 * **Report.Rmd** is our report markdown file.
