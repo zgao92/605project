@@ -2,6 +2,8 @@
 
 We are group 12 for groupwork3 on STAT 605. Our topic is Rainbow 6 Game Analysis with chtc. The instructor is John Gillett and the TA is Bi Cheng Wu.
 
+Rainbow Six is a very popular tactical shooter video game, which focuses more on stealth and tactics than on sheer firepower. Based on the players' data, we want to explore the winning probabilities for different factors.
+
 ## Goals:
 - To test the fairness of maps 
 - To find which operator has higher probability to win
