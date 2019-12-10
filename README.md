@@ -20,4 +20,4 @@
 
 ## Post Analysis R Code:
 
-* **.R** is the code for post analysis.
+* **group3.R** is the code for post analysis.
