@@ -1,0 +1,144 @@
+---
+title: "STAT 605 Report"
+author: "Ping Yu, Ke Chen, Yansong Mao, Zejin Gao"
+date: "December 5, 2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r echo=FALSE, warning=FALSE}
+setwd("~/wisconsin/605/group3/group3")
+library(knitr)
+```
+
+##Introduction
+
+Rainbow Six is a popular tactical shooter video game, which focuses more on stealth and tactics than on sheer firepower. Our data is from Kaggle website composed by 22 csv files. Each line in csv file represents one player¡¯s information in one round in one match. The problems we want to explore are followings:
+
+- Which operator has higher probability to win?
+- Which weapon should you choose to win?
+- Are those maps fair or not? If one map favors the defenders or another map favors attackers.
+
+First we run the counting program(.sh file) in parallel through CHTC system on each csv files and merge the result, then analyze the data with R in local system. As for data analysis We use contingency table and conduct chi-squared test to infer if there is a significant effect between  different maps on winning probability through p-value. Similar with other variables: weapons and operators. Then We did summary statistics to compare the winning probabilities between different factors and conduct data visilization.
+
+
+## Data Analysis
+The game players data comes from Kaggle website <https://www.kaggle.com/maxcobra/rainbow-six-siege-s5-ranked-dataset>. The data set has 22 csv files and each file is about 1GB, which contribute to a 22GB file in total. Each csv file has 31 features and it contains detailed information about each palyer. We mainly focus on five variables: **mapname**, **role**, **operator**, **primaryweapon**, **wonrole**, **haswon**.
+
+### 1. Are those maps fair or not?
+The following table summarize part of the winning information of attackers and defenders in variours maps. In the **BANK** map, there are about 2.5 million attackers win and 2.8 million defenders win. The attacker winning proportion in **BANK** map is about 0.47 while that in **BORDER** map is 0.49. 
+
+```{r echo=FALSE}
+map <- read.table(file = "map.txt", header = TRUE, sep = " ")
+level.mapname <- levels(map$mapname)
+level.winrole <- levels(map$winrole)
+mat.map <- matrix(rep(0,length(level.winrole)*length(level.mapname)),nrow = length(level.mapname),ncol = length(level.winrole))
+rownames(mat.map) <- level.mapname
+colnames(mat.map) <- level.winrole
+for (i in level.mapname) {
+  for (j in level.winrole) {
+    mat.map[i,j]=sum(map$count[as.logical((map$mapname==i)*(map$winrole==j))])
+  }
+}
+proportion <- mat.map[,1]/(mat.map[,1]+mat.map[,2]) # attacker win proportion
+fair = (proportion > 0.5-0.02) & (proportion < 0.5+0.02)
+mat.map <- cbind(mat.map,proportion,fair)
+mat.map <- mat.map[order(proportion),]
+mat.map=as.table(mat.map)
+kable(mat.map[1:5,], caption="Winning Roles in Different Maps", align = "c",
+      col.names = c("Attackers", "Defenders", "Attackers winning probability","Fair"))
+```
+
+The test result of the fairness of the maps are shown in the table at the end of this section. The table shows that the winning probabilities for attackers and defenders in different maps are different. 
+
+We consider a map is fair if the attacker winning probability falls between $0.5+/-0.02$, which means whether the probabity falls between $[0.48,0.52]$. Thus, the result shows that **BARTLETT_U.**, **BANK** favors defenders and **HOUSE**, **CHALET**, **FAVELAS** favors attackers.
+
+
+### 2. Which operator has higher winning probability?
+This table shows part of the winning probabilities for 35 different operators. Most of the operators have winning probabilities of 0.5. We did $\chi_2^2$ test to see are there any operators are easier to win or lose. 
+
+```{r echo=FALSE}
+rm(list = ls())
+operator <- read.table(file = "operator.txt", header = TRUE, sep = " ")
+operator$haswon <- factor(operator$haswon,labels = c("lose","win"))
+level.haswon <- levels(operator$haswon)
+level.operator <- levels(operator$operator)
+mat.operator <- matrix(rep(0,length(level.haswon)*length(level.operator)),nrow = length(level.operator),ncol = length(level.haswon))
+rownames(mat.operator) <- level.operator
+colnames(mat.operator) <- level.haswon
+for (i in level.operator) {
+  for (j in level.haswon) {
+    mat.operator[i,j]=sum(operator$count[as.logical((operator$operator==i)*(operator$haswon==j))])
+  }
+}
+proportion <- mat.operator[,1]/(mat.operator[,1]+mat.operator[,2])
+fair = (proportion > 0.5-0.02) & (proportion < 0.5+0.02)
+mat.operator <- cbind(mat.operator,proportion,fair)
+mat.operator <- mat.operator[order(proportion),]
+mat.operator = as.table(mat.operator)
+kable(mat.operator[1:5,], caption = "Winning probabilities for Different Operators", align="c",
+      col.names = c("lose", "win", "Loss probabiliy","Fair"))
+```
+
+The test result of the equality of winning probabilities for different operators are shown in the table at the end of this section. From the result table, we can conclude that the winning probabilities for different operators are different.
+
+We consider an operator has no bias if the loss probability falls between $0.5+/-0.02$, which means whether the probabity falls between $[0.48,0.52]$. Thus, the result shows that **JTF2-FROST**, **GIGN-ROOK**, **GIGN-TWITCH** has higher probabilities to win and **GIGN-RESERVE**, **SAS-RESERVE**, **SPETSNAZ-RESERVE**, **SPETSNAZ-TACHANKA**, **SWAT-RESERVE**, **GSG9-RESERVE** are more likely to lose.
+
+
+### 3. Which weapon has a higher probability to win?
+This table shows part of the winning probabilities for 35 different weapons. Most of the weapons have winning probabilities of 0.5. We did $\chi_2^2$ test to see are there any weapons are easier to win or lose. 
+```{r echo=FALSE}
+rm(list = ls())
+primaryweapon <- read.table(file = "primaryweapon.txt", header = TRUE, sep = " ")
+primaryweapon$haswon <- factor(primaryweapon$haswon,labels = c("lose","win"))
+level.haswon <- levels(primaryweapon$haswon)
+level.primaryweapon <- levels(primaryweapon$primaryweapon)
+mat.primaryweapon <- matrix(rep(0,length(level.haswon)*length(level.primaryweapon)),nrow = length(level.primaryweapon),ncol = length(level.haswon))
+rownames(mat.primaryweapon) <- level.primaryweapon
+colnames(mat.primaryweapon) <- level.haswon
+for (i in level.primaryweapon) {
+  for (j in level.haswon) {
+    mat.primaryweapon[i,j]=sum(primaryweapon$count[as.logical((primaryweapon$primaryweapon==i)*(primaryweapon$haswon==j))])
+  }
+}
+proportion <- mat.primaryweapon[,1]/(mat.primaryweapon[,1]+mat.primaryweapon[,2])
+fair = (proportion > 0.5-0.02) & (proportion < 0.5+0.02)
+mat.primaryweapon <- cbind(mat.primaryweapon,proportion,fair)
+mat.primaryweapon <- mat.primaryweapon[order(proportion),]
+mat.primaryweapon = as.table(mat.primaryweapon)
+kable(mat.primaryweapon[1:5,], caption = "Winning probabilities for Different Weapons", align="c",
+      col.names = c("lose", "win", "Loss probabiliy","Fair"))
+```
+
+The test result of the equality of winning probabilities for different weapons are shown in the table at the end of this section. From the result table, we can conclude that the winning probabilities for different weapons are different.
+
+We consider a weapon has no bias if the loss probability falls between $0.5+/-0.02$, which means whether the probabity falls between $[0.48,0.52]$. Thus, the result shows that **9mm_C1**, **F2 ** have higher probabilities to win and **M870**, **SG-CQB**, **SASG-12** are more likely to lose.
+
+### 4. $\chi_2^2$ Test results table
+The $\chi_2^2$ test results for the above three tests is the following. The three p-values are all significantly smaller than $0.05$.
+
+```{r echo=FALSE}
+stat = c(170360, 36632, 40703)
+df = c(15,45,34)
+pvalue=c("2.2e-16","2.2e-16", "2.2e-16")
+result = cbind(stat, df, pvalue)
+colnames(result)=c("Test statistic", "Degree of freedom", "P-value")
+rownames(result)=c("Map", "Weapon", "Operator")
+kable(result, caption = "Pearson's Chi-squared test result",align = "c")
+```
+
+
+### Weakness of our work
+1. We only invetigate the signle operators and didn't consider the team work effect in this game. Maybe some combinations of roles are more likely to win.
+2. We only compare difference overall which can not prove a seperate difference,for example, there may be no significant difference for two particular operators. 
+
+##Conclusion:
+From the graph and hypothesis test, there is definitely a significant difference on winning probability in different maps, weapons and operators.
+
+And the summary winning probability statistic gives us a guideline for players in playing games. For example, you can pick the operator and primary weapons with higher winning probability.
+
+In specific, as for maps, **BARTLETT_U** favors defender most with 54.8% winning probability  while map **FAVELAS favors** attacker most with 54.1% winning probability. As for operators, **JTF2-FROST** has 53.2% probabilities to win and **GIGN-RESERVE** are more likely to lose with 54.2% probability. As for operators, **9mm_C1** have higher probabilities to win while  **M870** are more likely to lose. But that can not prove that choosing operators and weapons with lower winning probability have small chance to win since the iteraction is not considered in our analysis.
+
+On the other hand, it suggests a potential improvement of game balance for game designer.For example, game designer can redesign the maps which has huge bias on winning probability to make the game fair enough.In the future, we will compare each variables in pairs to see if there is difference individually and considering interaction between weapons and operators with    
+ANOVA model.
