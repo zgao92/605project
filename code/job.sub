@@ -11,7 +11,7 @@ output = output/job_$(Cluster)_$(Process).out
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = datadump_s5-$(num).csv
+transfer_input_files = /home/zgao92/group3/datadump_s5-$(num).csv
 
 request_cpus = 1
 request_memory = 1GB

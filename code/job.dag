@@ -1,0 +1,6 @@
+# Run "condor_submit_dag job.dag" to cause all the code specified in
+# the DAG to run in the correct order.
+
+job 1 job.sub
+
+script post 1 combine.sh
