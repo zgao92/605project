@@ -27,4 +27,5 @@ We are group 12 for groupwork3 on STAT 605. Our topic is Rainbow 6 Game Analysis
 * **group3.R** is the code for post analysis.
 
 ## Report:
-
+* **Report.Rmd** is the our report markdown file.
+* **Report.html** is the our report html file.
