@@ -12,7 +12,7 @@ Rainbow Six is a very popular tactical shooter video game, which focuses more on
 
 ## Code:
 
-* **submit.sh** is the code we run for getting the chtc_output.
+* **submit.sh** is the code we run on CHTC for getting the chtc_output.
 
 * **job.sh**, **job.sub**, **job.dag** and **combine.sh** are the supporting codes for **submit.sh**.
 
