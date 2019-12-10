@@ -1,5 +1,11 @@
 # 605project
 
+## Goals:
+- To test the fairness of maps 
+- To find which operator has higher probability to win
+- To find weapons with best performance
+
+
 ## code
 
 * **job.sh** and **job.sub** are the codes for chtc to run.
